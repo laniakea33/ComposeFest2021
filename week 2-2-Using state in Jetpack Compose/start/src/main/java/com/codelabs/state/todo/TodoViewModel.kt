@@ -16,22 +16,57 @@
 
 package com.codelabs.state.todo
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class TodoViewModel : ViewModel() {
 
-    private var _todoItems = MutableLiveData(listOf<TodoItem>())
-    val todoItems: LiveData<List<TodoItem>> = _todoItems
+//    private var _todoItems = MutableLiveData(listOf<TodoItem>())
+//    val todoItems: LiveData<List<TodoItem>> = _todoItems
+//  위랑 아래는 쌔임쌔임, 근데 컴포즈만 사용하는 스테이트일 때만 쓸 것.
+//  뷰 시스템에서도 사용한다면 LiveData를 사용하는 게 낫다.
+    var todoItems = mutableStateListOf<TodoItem>()
+        private set
+
+    private var currentEditPosition by mutableStateOf(-1)
+    //  Compose는 State<T>뿐만 아니라 아래처럼 regular function을 호출해서도
+    //  옵저빙이 가능하다.
+    //  그래서 이걸 Observe하면 todoItems이나 currentEditPosition이
+    //  변경되었을 때에도 이벤트를 수신함.
+    val currentEditItem: TodoItem?
+        get() = todoItems.getOrNull(currentEditPosition)
 
     fun addItem(item: TodoItem) {
-        _todoItems.value = _todoItems.value!! + listOf(item)
+        todoItems.add(item)
     }
 
     fun removeItem(item: TodoItem) {
-        _todoItems.value = _todoItems.value!!.toMutableList().also {
-            it.remove(item)
+        todoItems.remove(item)
+        onEditDone()
+    }
+
+    // event: onEditItemSelected
+    fun onEditItemSelected(item: TodoItem) {
+        currentEditPosition = todoItems.indexOf(item)
+    }
+
+    // event: onEditDone
+    fun onEditDone() {
+        currentEditPosition = -1
+    }
+
+    // event: onEditItemChange
+    fun onEditItemChange(item: TodoItem) {
+        val currentItem = requireNotNull(currentEditItem)
+        require(currentItem.id == item.id) {
+            "You can only change an item with the same id as currentEditItem"
         }
+
+        todoItems[currentEditPosition] = item
     }
 }
