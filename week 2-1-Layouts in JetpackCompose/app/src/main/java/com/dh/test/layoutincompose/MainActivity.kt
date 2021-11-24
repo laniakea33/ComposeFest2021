@@ -42,14 +42,14 @@ class MainActivity : ComponentActivity() {
 //                    PhotographerCard()
 //                    LayoutsCodelab()
 //                    SimpleList()
-//                    LazyList()
+                    LazyList()
 //                    MyOwnColumn(Modifier.padding(8.dp)) {
 //                        Text("MyOwnColumn")
 //                        Text("places items")
 //                        Text("vertically.")
 //                        Text("We've done it by hand!")
 //                    }
-                    ChipsInStraggeredGrid()
+//                    ChipsInStraggeredGrid()
                 }
             }
         }
@@ -254,7 +254,7 @@ fun ImageListItem(index: Int) {
             //  네트워크를 통한 이미지 다운 및 렌더링을 위한 라이브러리 coil 사용
             //  you can choose Glide via an Accompanist wrapper if you prefer.
             painter = rememberImagePainter(
-                data = "https://developer.android.com/images/brand/Android_Robot.png"
+                data = "https://www.saraminbanner.co.kr/app_promote/banner/2020/11/qkaijp_py2r-ukjlzn_bannersaraminappdownload.png"
             ),
             contentDescription = "Android Logo",
             modifier = Modifier.size(50.dp)
