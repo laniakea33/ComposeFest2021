@@ -21,6 +21,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.widget.NestedScrollView
@@ -29,6 +32,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.samples.apps.sunflower.R
@@ -106,8 +110,27 @@ class PlantDetailFragment : Fragment() {
                     else -> false
                 }
             }
+
+            composeView.apply {
+                //  Fragment내에서 composeView를 사용할 때 설정해 줄 것
+                //  자세한 내용은 여기 https://developer.android.com/jetpack/compose/interop/interop-apis#composition-strategy
+                setViewCompositionStrategy(
+                    ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+                )
+                setContent {
+                    //  기존 View 시스템의 테마를 Compose테마로 마이그레이션 하는 함수
+                    //  syltes.xml에 정의된 테마를 파싱한다.
+                    //  compose-theme-adapter 라이브러리의 기능
+                    MdcTheme {
+                        PlantDetailDescription(plantDetailViewModel = plantDetailViewModel)
+                    }
+                }
+            }
         }
+
         setHasOptionsMenu(true)
+
+
 
         return binding.root
     }
